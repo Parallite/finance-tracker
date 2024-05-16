@@ -5,3 +5,5 @@ export interface Currency {
     label: string;
     locale: string;
 }
+
+export type TransactionType = "income" | "expense"
