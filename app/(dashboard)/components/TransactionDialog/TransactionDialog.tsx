@@ -4,7 +4,7 @@ import { TransactionSchema, TransactionSchemaType } from "@/app/schema/transacti
 import { TransactionType } from "@/app/types";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
-import { FC, ReactNode } from "react";
+import { FC, ReactNode, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel } from "@/components/ui/form";
@@ -27,6 +27,11 @@ export const TransactionDialog: FC<TransactionDialogProps> = ({
             date: new Date()
         }
     })
+
+    const handleCategoryChange = useCallback((value: string) => {
+        form.setValue("category", value)
+    }, [form])
+
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -93,7 +98,7 @@ export const TransactionDialog: FC<TransactionDialogProps> = ({
                                     <FormItem>
                                         <FormLabel className="mr-4">Category</FormLabel>
                                         <FormControl>
-                                            <CategoryPicker type={type} />
+                                            <CategoryPicker type={type} onChange={handleCategoryChange} />
                                         </FormControl>
                                         <FormDescription>
                                             Select a category for this transaction (required)

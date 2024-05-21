@@ -1,5 +1,3 @@
-'use client'
-
 import { CreateCategorySchema, CreateCategorySchemaType } from '@/app/schema/categories'
 import { TransactionType } from '@/app/types'
 import { Button } from '@/components/ui/button'
@@ -18,14 +16,18 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { CreateCategory } from '@/app/actions/categories'
 import { Category } from '@prisma/client'
 import { toast } from 'sonner'
+import { useTheme } from 'next-themes'
 
 interface CreateCategoryDialogProps {
-    type: TransactionType
+    type: TransactionType;
+    successCallback: (category: Category) => void;
 }
 
 export const CreateCategoryDialog: FC<CreateCategoryDialogProps> = ({
-    type
+    type,
+    successCallback
 }) => {
+    const theme = useTheme();
     const [open, setOpen] = useState<boolean>(false)
 
     const form = useForm<CreateCategorySchemaType>({
@@ -53,6 +55,8 @@ export const CreateCategoryDialog: FC<CreateCategoryDialogProps> = ({
             toast.success(`Category ${data.name} created successfully 👍🏻`, {
                 id: "create-category"
             });
+
+            successCallback(data)
 
             await queryClient.invalidateQueries({
                 queryKey: ["categories"]
@@ -110,7 +114,7 @@ export const CreateCategoryDialog: FC<CreateCategoryDialogProps> = ({
                                         <Input placeholder="Category" {...field} />
                                     </FormControl>
                                     <FormDescription>
-                                        Transaction description (optional)
+                                        This is how your category will appear in the app
                                     </FormDescription>
                                 </FormItem>
                             )}
@@ -148,9 +152,13 @@ export const CreateCategoryDialog: FC<CreateCategoryDialogProps> = ({
                                                 </Button>
                                             </PopoverTrigger>
                                             <PopoverContent className='w-full'>
-                                                <Picker data={data} onEmojiSelect={(emoji: { native: string }) => {
-                                                    field.onChange(emoji.native)
-                                                }} />
+                                                <Picker
+                                                    data={data}
+                                                    theme={theme.resolvedTheme}
+                                                    onEmojiSelect={(emoji: { native: string }) => {
+                                                        field.onChange(emoji.native)
+                                                    }}
+                                                />
                                             </PopoverContent>
                                         </Popover>
                                     </FormControl>
