@@ -2,14 +2,23 @@
 
 import { TransactionSchema, TransactionSchemaType } from "@/app/schema/transaction";
 import { TransactionType } from "@/app/types";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
-import { FC, ReactNode, useCallback } from "react";
+import { FC, ReactNode, useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { CategoryPicker } from "../CategoryPicker";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { format } from "date-fns";
+import { LuCalendar, LuLoader2 } from "react-icons/lu";
+import { Calendar } from "@/components/ui/calendar";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { CreateTransaction } from "@/app/actions/transactions";
+import { toast } from "sonner";
+import { DateToUTCDate } from "@/lib/helpers";
 
 interface TransactionDialogProps {
     trigger: ReactNode;
@@ -20,6 +29,7 @@ export const TransactionDialog: FC<TransactionDialogProps> = ({
     trigger,
     type
 }) => {
+    const [open, setOpen] = useState<boolean>(false);
     const form = useForm<TransactionSchemaType>({
         resolver: zodResolver(TransactionSchema),
         defaultValues: {
@@ -32,8 +42,48 @@ export const TransactionDialog: FC<TransactionDialogProps> = ({
         form.setValue("category", value)
     }, [form])
 
+    const handleCloseButton = () => {
+        form.reset
+    }
+
+    const queryClient = useQueryClient();
+
+    const { mutate, isPending } = useMutation({
+        mutationFn: CreateTransaction,
+        onSuccess: () => {
+            toast.success("Transaction created successfully 👍🏻", {
+                id: "create-transaction"
+            });
+
+            form.reset({
+                type,
+                description: "",
+                amount: 0,
+                date: new Date(),
+                category: undefined
+            })
+
+            queryClient.invalidateQueries({
+                queryKey: ["overview"]
+            })
+
+            setOpen((prev) => !prev);
+        }
+    });
+
+    const onSubmit = useCallback((values: TransactionSchemaType) => {
+        toast.loading("Creating transaction...", {
+            id: "create-transaction"
+        })
+
+        mutate({
+            ...values,
+            date: DateToUTCDate(values.date)
+        })
+    }, [mutate])
+
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 {trigger}
             </DialogTrigger>
@@ -51,7 +101,7 @@ export const TransactionDialog: FC<TransactionDialogProps> = ({
                     </DialogTitle>
                 </DialogHeader>
                 <Form {...form}>
-                    <form className="space-y-4">
+                    <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
                         <FormField
                             control={form.control}
                             name="description"
@@ -90,7 +140,7 @@ export const TransactionDialog: FC<TransactionDialogProps> = ({
                                 </FormItem>
                             )}
                         />
-                        <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
                             <FormField
                                 control={form.control}
                                 name="category"
@@ -106,10 +156,68 @@ export const TransactionDialog: FC<TransactionDialogProps> = ({
                                     </FormItem>
                                 )}
                             />
+                            <FormField
+                                control={form.control}
+                                name="date"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className="mr-4">Transaction date</FormLabel>
+                                        <Popover>
+                                            <PopoverTrigger asChild>
+                                                <FormControl>
+                                                    <Button
+                                                        variant={"outline"}
+                                                        className={cn(
+                                                            "w-[200px] pl-3 text-left font-normal",
+                                                            !field.value && "text-muted-foreground"
+                                                        )}
+                                                    >
+                                                        {field.value ? (
+                                                            format(field.value, 'PPP')
+                                                        ) : (
+                                                            <span>Pick a date</span>
+                                                        )}
+                                                        <LuCalendar className="ml-auto h-4 w-4 opacity-50" />
+                                                    </Button>
+                                                </FormControl>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-auto p-0">
+                                                <Calendar
+                                                    mode="single"
+                                                    selected={field.value}
+                                                    onSelect={(value) => {
+                                                        if (!value) return
+                                                        field.onChange(value)
+                                                    }}
+                                                    initialFocus
+                                                />
+                                            </PopoverContent>
+                                        </Popover>
+                                        <FormDescription>
+                                            Select a date for this transaction (required)
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
                         </div>
                     </form>
                 </Form>
+                <DialogFooter>
+                    <DialogClose asChild>
+                        <Button type='button' variant={'secondary'} onClick={handleCloseButton}>
+                            Cancel
+                        </Button>
+                    </DialogClose>
+                    <Button
+                        onClick={form.handleSubmit(onSubmit)}
+                        disabled={isPending}
+                    >
+                        {!isPending && 'Create'}
+                        {isPending && <LuLoader2 className='animate-spin' />}
+                    </Button>
+                </DialogFooter>
             </DialogContent>
-        </Dialog>
+        </Dialog >
     )
 }

@@ -45,9 +45,9 @@ model Transaction {
 
 model MonthHistory {
   userId  String
-  day     String
-  month   String
-  year    String
+  day     Int
+  month   Int
+  year    Int
   income  Float
   expense Float
 
@@ -56,8 +56,8 @@ model MonthHistory {
 
 model YearHistory {
   userId  String
-  month   String
-  year    String
+  month   Int
+  year    Int
   income  Float
   expense Float
 
