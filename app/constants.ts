@@ -7,3 +7,5 @@ export const CURRENCIES: Currencies = [
     { value: "JPY", label: "¥ Yen", locale: "ja-JP" },
     { value: "GBP", label: "£ Pound", locale: "en-GB" },
 ]
+
+export const MAX_DATE_RANGE_DAYS = 90;

@@ -4,6 +4,7 @@ import { currentUser } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation';
 import React from 'react'
 import { TransactionDialog } from "./components/TransactionDialog";
+import { Overview } from "./components/Overview";
 
 async function page() {
     const user = await currentUser();
@@ -53,6 +54,7 @@ async function page() {
                     </div>
                 </div>
             </div>
+            <Overview userSettings={userSettings} />
         </div>
     )
 }
