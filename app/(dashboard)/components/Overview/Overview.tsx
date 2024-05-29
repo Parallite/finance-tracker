@@ -6,19 +6,15 @@ import { UserSettings } from '@prisma/client'
 import { differenceInDays, startOfMonth } from 'date-fns';
 import React, { FC, useState } from 'react'
 import { toast } from 'sonner';
+import { StatsCards } from '../StatsCards';
 
 interface OverviewProps {
     userSettings: UserSettings;
 }
 
 interface Range {
-    from: Date | undefined;
-    to: Date | undefined;
-}
-
-interface PickerData {
-    range: Range;
-    rangeCompare?: Range | undefined;
+    from: Date;
+    to: Date;
 }
 
 export const Overview: FC<OverviewProps> = ({
@@ -29,16 +25,6 @@ export const Overview: FC<OverviewProps> = ({
         to: new Date()
     })
 
-    const handleUpdateDate = (values: PickerData) => {
-        const { from, to } = values.range;
-        if (!from || !to) return
-        if (differenceInDays(to, from) > MAX_DATE_RANGE_DAYS) {
-            toast.error(`The selected date range is too big. Max allowed range is ${MAX_DATE_RANGE_DAYS}!`)
-            return
-        };
-        setDateRange({ from, to })
-    }
-
     return (
         <>
             <div className="container flex flex-wrap items-end justify-between gap-2 py-6">
@@ -47,12 +33,27 @@ export const Overview: FC<OverviewProps> = ({
                 </h2>
                 <div className="flex items-center gap-3">
                     <DateRangePicker
-                        onUpdate={handleUpdateDate}
+                        onUpdate={(values) => {
+                            const { from, to } = values.range;
+                            if (!from || !to) return
+                            if (differenceInDays(to, from) > MAX_DATE_RANGE_DAYS) {
+                                toast.error(`The selected date range is too big. Max allowed range is ${MAX_DATE_RANGE_DAYS}!`)
+                                return
+                            };
+                            setDateRange({ from, to })
+                        }}
                         initialDateFrom={dateRange.from}
                         initialDateTo={dateRange.to}
                         showCompare={false}
                     />
                 </div>
+            </div>
+            <div className='container flex w-full flex-col gap-2'>
+                <StatsCards
+                    userSettings={userSettings}
+                    from={dateRange.from}
+                    to={dateRange.to}
+                />
             </div>
         </>
     )
