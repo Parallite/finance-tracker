@@ -2,14 +2,14 @@ import { Card } from '@/components/ui/card';
 import React, { FC, ReactNode, useCallback } from 'react'
 import CountUp from 'react-countup'
 
-interface StatCardProps {
+interface StatsCardProps {
     formatter: Intl.NumberFormat;
     icon: ReactNode,
     title: string;
     value: number
 }
 
-export const StatCard: FC<StatCardProps> = ({
+export const StatsCard: FC<StatsCardProps> = ({
     formatter,
     icon,
     title,

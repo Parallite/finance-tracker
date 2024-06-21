@@ -7,7 +7,7 @@ import { UserSettings } from "@prisma/client"
 import { useQuery } from "@tanstack/react-query";
 import { FC, useMemo } from "react";
 import { LuTrendingDown, LuTrendingUp, LuWallet } from "react-icons/lu";
-import { StatCard } from "../StatCard";
+import { StatsCard } from "../StatsCard";
 
 interface StatsCardsProps {
     from: Date;
@@ -38,7 +38,7 @@ export const StatsCards: FC<StatsCardsProps> = ({
     return (
         <div className="relative flex w-full flex-wrap gap-2 md:flex-nowrap">
             <SkeletonWrapper isLoading={statsQuery.isFetching} >
-                <StatCard
+                <StatsCard
                     formatter={formatter}
                     value={income}
                     title="Income"
@@ -48,7 +48,7 @@ export const StatsCards: FC<StatsCardsProps> = ({
                 />
             </SkeletonWrapper>
             <SkeletonWrapper isLoading={statsQuery.isFetching} >
-                <StatCard
+                <StatsCard
                     formatter={formatter}
                     value={expense}
                     title="Expense"
@@ -58,7 +58,7 @@ export const StatsCards: FC<StatsCardsProps> = ({
                 />
             </SkeletonWrapper>
             <SkeletonWrapper isLoading={statsQuery.isFetching} >
-                <StatCard
+                <StatsCard
                     formatter={formatter}
                     value={balance}
                     title="Balance"

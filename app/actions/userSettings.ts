@@ -6,12 +6,12 @@ import { UpdateUserCurrencySchema } from "@/app/schema/userSettings";
 import { redirect } from "next/navigation";
 
 export async function UpdateUserCurrency(currency: string) {
-    const paresdBody = UpdateUserCurrencySchema.safeParse({
+    const parsedBody = UpdateUserCurrencySchema.safeParse({
         currency
     })
 
-    if (!paresdBody.success) {
-        throw paresdBody.error
+    if (!parsedBody.success) {
+        throw parsedBody.error
     }
 
     const user = await currentUser();
