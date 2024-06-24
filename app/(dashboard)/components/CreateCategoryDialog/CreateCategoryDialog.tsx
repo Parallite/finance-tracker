@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
-import React, { FC, useCallback, useState } from 'react'
+import React, { FC, ReactNode, useCallback, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { LuCircleOff, LuLoader2, LuPlusSquare } from 'react-icons/lu';
 import Picker from "@emoji-mart/react";
@@ -20,11 +20,13 @@ import { useTheme } from 'next-themes'
 
 interface CreateCategoryDialogProps {
     type: TransactionType;
+    trigger?: ReactNode
     successCallback: (category: Category) => void;
 }
 
 export const CreateCategoryDialog: FC<CreateCategoryDialogProps> = ({
     type,
+    trigger,
     successCallback
 }) => {
     const theme = useTheme();
@@ -81,14 +83,15 @@ export const CreateCategoryDialog: FC<CreateCategoryDialogProps> = ({
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button
+                {trigger ? trigger : (<Button
                     variant={"ghost"}
                     className='flex border-separate items-center justify-start
                     rounded-none border-b px-3 py-3 text-muted-foreground'
                 >
                     <LuPlusSquare className='mr-2 h-4 w-4' />
                     Create new
-                </Button>
+                </Button>)
+                }
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
