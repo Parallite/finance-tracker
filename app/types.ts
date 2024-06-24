@@ -6,4 +6,11 @@ export interface Currency {
     locale: string;
 }
 
-export type TransactionType = "income" | "expense"
+export type TransactionType = "income" | "expense";
+
+export type Timeframe = "month" | "year";
+
+export interface Period {
+    year: number;
+    month: number
+}
