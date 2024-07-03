@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<h1 align="center" id="title">Finance tracker</h1>
 
-## Getting Started
+<p id="description">Finance tracker - это веб-приложение, реализованное с помощью Next.js. Представляет собой классическое веб-приложение отслеживания финансовых затрат. Приложение включает в себя упрощенную аутентификацию пользователей, реализованную с помощью ClerkJs, динамический график затрат, реализованный с помощью библиотеки Recharts.
+</p>
 
-First, run the development server:
+<h2>Demo</h2>
+
+<p>Ознакомиться с живой демонстрацией веб-приложения Finance tracker можно перейдя по следующей ссылке: [Ссылка на Vercel](https://finance-tracker-ten-theta.vercel.app/).
+Не стесняйтесь взаимодействовать с демо-версией и тестировать доступные функции.</p>
+
+<h2>Возможности приложения:</h2>
+
+- Аутентификация пользователя обрабатывается с помощью библиотеки аутентификации ClerkJs. Он предлагает функции безопасной регистрации, входа в систему и управления учетными записями, обеспечивая конфиденциальность и защиту информации о пользователях.
+- Пользователи имеют возможность пройти аутентификацию, используя свои учетные записи Google и GitHub.
+- Приложение отображает график затрат и пополнений кошелька при помощи библиотеки Recharts с удобной выборкой интересующих дат.
+- Пользователи могут редактировать расходы и пополнения, а также имеют возможность присваивать категориям Emoji-картинки для дальнейшего удобства пользования при помощи Emoji-mart picker.
+- Пользователи имеют возможнсоть выгрузить данные о расходах и пополнении в виде таблицы CSV.
+- Приложение позволяет вести учет затрат и пополнений в пяти денежных валютах: Рубль, Доллар, Евро, Йена, Фунты.
+
+<br />
+
+## :toolbox: Шаги по установке
+
+1. Убедиться, что у Вас установлен **Git** и **NodeJS**.
+2. Клонировать репозиторий на свой компьютер.
+3. Создать `.env` файл в основной директории.
+4. Заполнить `.env` файл содержимым:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# .env
+
+# clerk keys
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=<your-clerk-publishable-key>
+CLERK_SECRET_KEY=<your-clerk-secret>
+
+# clerk redirects
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL=/wizard
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL=/sign-in
+
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+5. Откройте терминал в основной директории. Установите зависимости при помощи консольной команды `npm install`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+6. Теперь приложение полностью настроено 👍 и Вы можете начать его использовать, запустив консольную команду `npm run dev`.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+<h2>💻 Стек технологий:</h2>
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+<ul>
+    <li><b>Front-end:</b> Next.js 14, Typescript, React, Tailwind, Emoji-mart, TanStack, Zod, Recharts</li>
+    <li><b>Back-end:</b> Node.js</li>
+    <li><b>Authentication:</b> ClerkJs</li>
+</ul>
